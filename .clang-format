@@ -1,0 +1,39 @@
+# Formatting baseline: clang-format 22.1.0.
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++20
+IndentWidth: 4
+ContinuationIndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 0
+BreakBeforeBraces: Allman
+AccessModifierOffset: -4
+NamespaceIndentation: None
+IndentCaseLabels: true
+PointerAlignment: Left
+ReferenceAlignment: Left
+DerivePointerAlignment: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Never
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortLambdasOnASingleLine: Inline
+AllowShortEnumsOnASingleLine: false
+BinPackArguments: false
+BinPackParameters: OnePerLine
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^"'
+    Priority: 1
+  - Regex: '^<juce_'
+    Priority: 2
+  - Regex: '^<'
+    Priority: 3
+SortIncludes:
+  Enabled: true
+  IgnoreCase: false
+FixNamespaceComments: true
+MaxEmptyLinesToKeep: 1
+LineEnding: LF
+InsertNewlineAtEOF: true

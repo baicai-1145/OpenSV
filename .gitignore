@@ -1,0 +1,11 @@
+/build/
+/out/
+/third_party/
+/analysis/
+/references/
+/tools/analysis/
+/tools/voice/
+/docs/
+/.vs/
+*.user
+AGENTS.md
