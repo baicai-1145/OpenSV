@@ -261,7 +261,9 @@ juce::Result VocoderResidual::load(const DnniReader& reader, std::size_t vocoder
 {
     loaded = false;
     const auto& nodes = reader.getNodes();
-    if (vocoderRoot >= nodes.size() || std::find(vocoderTypeIds.begin(), vocoderTypeIds.end(), nodes[vocoderRoot].typeId) == vocoderTypeIds.end())
+    // Version 1 containers store the literal tag, version 2 stores a seeded hash of
+    // the same name, so both spellings identify the same vocoder implementation.
+    if (vocoderRoot >= nodes.size() || (nodes[vocoderRoot].type != "_nhntv2" && std::find(vocoderTypeIds.begin(), vocoderTypeIds.end(), nodes[vocoderRoot].typeId) == vocoderTypeIds.end()))
     {
         return juce::Result::fail("Vocoder residual: root node is out of range or has an unsupported type.");
     }

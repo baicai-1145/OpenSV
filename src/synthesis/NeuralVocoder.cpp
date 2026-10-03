@@ -64,7 +64,9 @@ juce::Result NeuralVocoder::load(const DnniReader& reader, std::size_t rootNode)
     }
 
     const auto& node = nodes[rootNode];
-    if (std::find(vocoderTypeIds.begin(), vocoderTypeIds.end(), node.typeId) == vocoderTypeIds.end())
+    // Version 1 containers store the literal tag, version 2 stores a seeded hash of
+    // the same name, so both spellings identify the same vocoder implementation.
+    if (node.type != "_nhntv2" && std::find(vocoderTypeIds.begin(), vocoderTypeIds.end(), node.typeId) == vocoderTypeIds.end())
     {
         return failure("unsupported root type at offset " + juce::String(node.offset));
     }

@@ -32,7 +32,9 @@ juce::Result modelError(const juce::String& reason)
 juce::Result VocoderSpectralHeads::load(const DnniReader& reader, std::size_t nodeIndex)
 {
     const auto& nodes = reader.getNodes();
-    if (nodeIndex >= nodes.size() || std::find(spectralHeadsTypes.begin(), spectralHeadsTypes.end(), nodes[nodeIndex].typeId) == spectralHeadsTypes.end())
+    // Version 1 containers store the literal tag, version 2 stores a seeded hash of
+    // the same name, so both spellings identify the same operator.
+    if (nodeIndex >= nodes.size() || (nodes[nodeIndex].type != "_cepsg1" && std::find(spectralHeadsTypes.begin(), spectralHeadsTypes.end(), nodes[nodeIndex].typeId) == spectralHeadsTypes.end()))
     {
         return modelError("the selected node is not the verified spectral-head operator.");
     }

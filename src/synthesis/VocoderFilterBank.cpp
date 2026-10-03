@@ -17,12 +17,18 @@ namespace
 constexpr std::size_t maximumFftSize = 1024 * 1024;
 constexpr std::size_t maximumTensorElements = 128 * 1024 * 1024;
 
-bool isFilterType(std::uint64_t typeId)
+bool isFilterType(const DnniNode& node)
 {
+    // Version 1 containers store the literal tag, version 2 stores a seeded hash of
+    // the same name, so both spellings identify the same filter implementation.
+    if (node.type == "_ltvfs1")
+    {
+        return true;
+    }
     // The registry contains twelve seeded identifiers for the same filter implementation.
     constexpr std::array<std::uint64_t, 12> identifiers{
         0x71063daca00b5f25ULL, 0x452e15e3aced1393ULL, 0x35bd434052b63ee4ULL, 0xcb4113ab3ac4b8e7ULL, 0x7380a4859db53c43ULL, 0x587c9e373dc5e0d4ULL, 0xfa929fbbaf89ff69ULL, 0x0892faf722f35001ULL, 0x33e2c6b7de8dd6a3ULL, 0x2dcfb47bd6bb27fcULL, 0x86627a39c3a17f9eULL, 0xa1ce8f87c4fa90caULL};
-    return std::find(identifiers.begin(), identifiers.end(), typeId) != identifiers.end();
+    return std::find(identifiers.begin(), identifiers.end(), node.typeId) != identifiers.end();
 }
 
 float getBoundaryWindow(std::size_t sample, std::size_t fftSize)
@@ -42,7 +48,7 @@ float getBoundaryWindow(std::size_t sample, std::size_t fftSize)
 juce::Result VocoderFilterBank::load(const DnniReader& reader, std::size_t filterNode, std::size_t requestedHopSamples)
 {
     const auto& nodes = reader.getNodes();
-    if (filterNode >= nodes.size() || !isFilterType(nodes[filterNode].typeId) || nodes[filterNode].payloadSize != 13 || !nodes[filterNode].children.empty())
+    if (filterNode >= nodes.size() || !isFilterType(nodes[filterNode]) || nodes[filterNode].payloadSize != 13 || !nodes[filterNode].children.empty())
     {
         return juce::Result::fail("Vocoder filtering requires a supported 13-byte leaf filter node.");
     }
